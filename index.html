@@ -17,7 +17,9 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:#0c0c0c;color:#e0dbd4;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',sans-serif;background:#0c0c0c;color:#e0dbd4;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;-webkit-user-select:none;-moz-user-select:none;user-select:none}
+input,textarea{-webkit-user-select:text;-moz-user-select:text;user-select:text}
+.selectable{-webkit-user-select:text;-moz-user-select:text;user-select:text;cursor:text}
 ::selection{background:#4f9dff;color:#000}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:#0c0c0c}
@@ -35,8 +37,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:18px 0;background:rg
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 40px;display:flex;align-items:center;justify-content:space-between}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.15rem;font-style:italic;color:#e8e4df}
 .nav-links{display:flex;gap:4px;list-style:none}
-.nav-links button{background:none;border:none;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;padding:8px 14px;border-radius:6px;cursor:pointer;transition:color 0.2s,background 0.2s}
+.nav-links button{position:relative;background:none;border:none;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;padding:8px 14px;border-radius:6px;cursor:pointer;transition:color 0.25s,background 0.25s;-webkit-tap-highlight-color:transparent}
 .nav-links button:hover{color:#e8e4df;background:rgba(255,255,255,0.06)}
+.nav-links button:active{transform:scale(0.96)}
+.nav-links button::after{content:'';position:absolute;left:14px;right:14px;bottom:2px;height:2px;border-radius:2px;background:#4f9dff;transform:scaleX(0);transform-origin:center;transition:transform 0.35s cubic-bezier(0.16,1,0.3,1)}
+.nav-links button.active{color:#f0ede8;background:rgba(79,157,255,0.08)}
+.nav-links button.active::after{transform:scaleX(1)}
 .nav-hire{font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#4f9dff;background:none;border:1px solid rgba(79,157,255,0.4);padding:8px 20px;border-radius:999px;cursor:pointer;transition:all 0.25s}
 .nav-hire:hover{background:#4f9dff;color:#000}
 .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
@@ -48,10 +54,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:18px 0;background:rg
 .mob-nav.open{display:flex}
 .mob-nav button{background:none;border:none;font-family:'Inter',sans-serif;font-size:0.88rem;color:#aaa;padding:12px 0;text-align:left;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.04);transition:color 0.2s}
 .mob-nav button:hover{color:#e8e4df}
+.mob-nav button.active{color:#4f9dff}
 
 /* HERO */
-#hero{min-height:100vh;display:grid;grid-template-columns:55% 45%;padding-top:70px}
-.hero-text{display:flex;flex-direction:column;justify-content:center;padding:60px 50px 60px 40px;max-width:620px}
+#hero{min-height:100vh;display:grid;grid-template-columns:min(55%,660px) 1fr;padding-top:70px}
+.hero-text{display:flex;flex-direction:column;justify-content:center;padding:60px 50px 60px 40px}
 .hero-tag{display:flex;align-items:center;gap:8px;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:#888;margin-bottom:28px}
 .hero-dot{width:6px;height:6px;border-radius:50%;background:#4f9dff;animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.6)}}
@@ -328,23 +335,23 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,0.06);padding:26
   <div class="nav-inner">
     <div class="nav-logo">Chiranjit Chakma</div>
     <ul class="nav-links">
-      <li><button onclick="goTo('about')">About</button></li>
-      <li><button onclick="goTo('skills')">Skills</button></li>
-      <li><button onclick="goTo('projects')">Projects</button></li>
-      <li><button onclick="goTo('cyber')">Security</button></li>
-      <li><button onclick="goTo('goals')">Goals</button></li>
-      <li><button onclick="goTo('contact')">Contact</button></li>
+      <li><button data-section="about" onclick="goTo('about')">About</button></li>
+      <li><button data-section="skills" onclick="goTo('skills')">Skills</button></li>
+      <li><button data-section="projects" onclick="goTo('projects')">Projects</button></li>
+      <li><button data-section="cyber" onclick="goTo('cyber')">Security</button></li>
+      <li><button data-section="goals" onclick="goTo('goals')">Goals</button></li>
+      <li><button data-section="contact" onclick="goTo('contact')">Contact</button></li>
     </ul>
     <button class="nav-hire" onclick="goTo('contact')">Hire Me</button>
     <button class="hamburger" id="hbg"><span></span><span></span><span></span></button>
   </div>
   <div class="mob-nav" id="mnav">
-    <button onclick="goTo('about');cM()">About</button>
-    <button onclick="goTo('skills');cM()">Skills</button>
-    <button onclick="goTo('projects');cM()">Projects</button>
-    <button onclick="goTo('cyber');cM()">Security</button>
-    <button onclick="goTo('goals');cM()">Goals</button>
-    <button onclick="goTo('contact');cM()">Contact</button>
+    <button data-section="about" onclick="goTo('about');cM()">About</button>
+    <button data-section="skills" onclick="goTo('skills');cM()">Skills</button>
+    <button data-section="projects" onclick="goTo('projects');cM()">Projects</button>
+    <button data-section="cyber" onclick="goTo('cyber');cM()">Security</button>
+    <button data-section="goals" onclick="goTo('goals');cM()">Goals</button>
+    <button data-section="contact" onclick="goTo('contact');cM()">Contact</button>
   </div>
 </nav>
 
@@ -480,7 +487,7 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,0.06);padding:26
         <div class="cy-item reveal"><div class="cy-icon">&#127760;</div><div><div class="cy-title">Network Security</div><div class="cy-desc">Protocols, packet analysis, firewalls, IDS — the backbone of every secure enterprise system.</div></div></div>
       </div>
       <div>
-        <div class="vision-card reveal"><div class="vc-lbl">Long-Term Vision</div><div class="vc-title">Master's in Cybersecurity &middot; Australia &#127462;&#127482;</div><div class="vc-list"><div class="vc-item">World-class postgraduate specialisation</div><div class="vc-item">Network security &amp; digital forensics focus</div><div class="vc-item">CEH &amp; CompTIA Security+ certifications</div><div class="vc-item">International career in digital security</div></div></div>
+        <div class="vision-card reveal"><div class="vc-lbl">Long-Term Vision</div><div class="vc-title">Postgraduate Studies in Cybersecurity &amp; AI</div><div class="vc-list"><div class="vc-item">World-class postgraduate specialisation</div><div class="vc-item">Network security, digital forensics &amp; applied AI focus</div><div class="vc-item">CEH &amp; CompTIA Security+ certifications</div><div class="vc-item">Open to Australia or other globally recognised destinations, given the opportunity</div></div></div>
         <div class="terminal reveal"><div class="term-bar"><div class="tdot td-r"></div><div class="tdot td-y"></div><div class="tdot td-g"></div><span class="term-ttl">security_scan.sh</span></div><div class="term-body"><div><span class="tp">root@kali:~#</span> <span class="tc">./recon.sh target.local</span></div><div><span class="tp">[+]</span> <span class="tc">Host up &middot; ports: 22, 80, 443</span></div><div><span class="tp">root@kali:~#</span> <span class="tc">nikto -h target.local</span></div><div><span class="tw">[!]</span> <span class="tc">Apache/2.4.51 — outdated</span></div><div><span class="th">[*]</span> <span class="tc">CVE-2021-41773 found</span></div><div><span class="tp">[&#10003;]</span> <span class="tc">Stay ethical. &#128274;</span></div><div><span class="tp">root@kali:~#</span> <span class="tcur"></span></div></div></div>
       </div>
     </div>
@@ -493,7 +500,7 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,0.06);padding:26
     <h2 class="sec-title">Goals &amp; <em>Ambitions</em></h2>
     <div class="goals-grid">
       <div class="gc reveal"><div class="gc-wm">01</div><div class="gc-period">Short-Term &middot; 1&ndash;2 Years</div><div class="gc-title">Build, Learn,<br><em>Grow</em></div><div class="gc-list"><div class="gc-item"><span>01.</span>Complete BSc PMCS with distinction</div><div class="gc-item"><span>02.</span>Build 5+ polished projects with AI &amp; code</div><div class="gc-item"><span>03.</span>Earn CEH or CompTIA Security+ certification</div><div class="gc-item"><span>04.</span>Contribute to open-source security tools</div><div class="gc-item"><span>05.</span>Build a strong professional online presence</div></div></div>
-      <div class="gc reveal"><div class="gc-wm">02</div><div class="gc-period">Long-Term &middot; 3&ndash;5 Years</div><div class="gc-title">Expert,<br><em>Global</em></div><div class="gc-list"><div class="gc-item"><span>01.</span>Master's in Cybersecurity in Australia</div><div class="gc-item"><span>02.</span>Work as security engineer or ethical hacker</div><div class="gc-item"><span>03.</span>Contribute to global cybersecurity research</div><div class="gc-item"><span>04.</span>Mentor others from underrepresented regions</div><div class="gc-item"><span>05.</span>Build something that advances digital safety</div></div></div>
+      <div class="gc reveal"><div class="gc-wm">02</div><div class="gc-period">Long-Term &middot; 3&ndash;5 Years</div><div class="gc-title">Expert,<br><em>Global</em></div><div class="gc-list"><div class="gc-item"><span>01.</span>Master's in Cybersecurity &amp; AI, ideally in Australia or another leading destination</div><div class="gc-item"><span>02.</span>Work as a security engineer, ethical hacker, or AI/ML engineer</div><div class="gc-item"><span>03.</span>Contribute to global cybersecurity &amp; AI research</div><div class="gc-item"><span>04.</span>Mentor others from underrepresented regions</div><div class="gc-item"><span>05.</span>Build something that advances digital safety through AI</div></div></div>
     </div>
   </div>
 </section>
@@ -505,8 +512,8 @@ footer{background:#0a0a0a;border-top:1px solid rgba(255,255,255,0.06);padding:26
         <div class="sec-lbl">Connect</div>
         <div class="contact-big">Let's build<br>something<em>great.</em></div>
         <div class="c-items">
-          <div class="ci reveal"><div class="ci-icon">&#9993;</div><div><div class="ci-lbl">Email</div><div class="ci-val"><a href="mailto:chiranjitc.official@gmail.com" style="color:inherit;text-decoration:none">chiranjitc.official@gmail.com</a></div></div></div>
-          <div class="ci reveal"><div class="ci-icon">&#128241;</div><div><div class="ci-lbl">Phone</div><div class="ci-val">+91 8798712804</div></div></div>
+          <div class="ci reveal"><div class="ci-icon">&#9993;</div><div><div class="ci-lbl">Email</div><div class="ci-val selectable"><a href="mailto:chiranjitc.official@gmail.com" style="color:inherit;text-decoration:none">chiranjitc.official@gmail.com</a></div></div></div>
+          <div class="ci reveal"><div class="ci-icon">&#128241;</div><div><div class="ci-lbl">Phone</div><div class="ci-val selectable">+91 8798712804</div></div></div>
           <div class="ci reveal"><div class="ci-icon">&#128205;</div><div><div class="ci-lbl">Location</div><div class="ci-val">Mysore, Karnataka, India</div></div></div>
         </div>
         <div class="soc-row">
@@ -573,6 +580,33 @@ document.querySelectorAll('.proj-card, .gc').forEach(function(card){
     card.style.setProperty('--my',(e.clientY-r.top)+'px');
   });
 });
+
+// Scroll-spy nav highlighting
+(function(){
+  var navBtns=document.querySelectorAll('[data-section]');
+  var sectionIds=['about','skills','projects','cyber','goals','contact'];
+  var sections=sectionIds.map(function(id){return document.getElementById(id)}).filter(Boolean);
+  function setActive(id){
+    navBtns.forEach(function(b){
+      b.classList.toggle('active',b.getAttribute('data-section')===id);
+    });
+  }
+  function onScroll(){
+    var probe=(window.scrollY||window.pageYOffset)+140;
+    var current=null;
+    for(var i=0;i<sections.length;i++){
+      var s=sections[i];
+      var top=s.offsetTop;
+      var bottom=top+s.offsetHeight;
+      if(probe>=top&&probe<bottom){current=s.id;break}
+    }
+    if(sections.length&&probe<sections[0].offsetTop){current=null}
+    setActive(current);
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll,{passive:true});
+  onScroll();
+})();
 
 // Hamburger
 var hbg=document.getElementById('hbg'),mnav=document.getElementById('mnav');
