@@ -427,6 +427,7 @@ document.querySelectorAll('.proj-card, .gc').forEach(function(card){
     {label:'Email Chiranjit',sub:'chiranjitc.official@gmail.com',icon:'&#128231;',action:function(){location.href='mailto:chiranjitc.official@gmail.com'}},
     {label:'Open GitHub',sub:'github.com/chiranjitchakma',icon:'&#128193;',action:function(){window.open('https://github.com/chiranjitchakma','_blank')}},
     {label:'Open LinkedIn',sub:'Connect professionally',icon:'&#128188;',action:function(){window.open('https://www.linkedin.com/in/chiranjit-c-a1ab0b31a','_blank')}},
+    {label:'Keyboard Shortcuts',sub:'See all available shortcuts',icon:'&#8984;',action:function(){openShortcuts()}},
     {label:'Back to Top',sub:'Return to the hero section',icon:'&#8593;',action:function(){goTo('hero')}}
   ];
 
@@ -460,11 +461,20 @@ document.querySelectorAll('.proj-card, .gc').forEach(function(card){
     activeIndex=0;
     render('');
     document.body.style.overflow='hidden';
-    setTimeout(function(){input.focus()},50);
+    if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+    var attempts=0;
+    (function tryFocus(){
+      input.focus();
+      attempts++;
+      if(document.activeElement!==input&&attempts<12){
+        setTimeout(tryFocus,25);
+      }
+    })();
   };
   window.closePalette=function(){
     palette.classList.remove('open');
     document.body.style.overflow='';
+    input.blur();
   };
 
   input.addEventListener('input',function(){activeIndex=0;render(input.value)});
@@ -591,4 +601,126 @@ document.querySelectorAll('.proj-card, .gc').forEach(function(card){
   if(row){
     row.addEventListener('click',function(){input.focus()});
   }
+})();
+
+/* ============ LIVE GITHUB STATS ============ */
+(function(){
+  var statsEl=document.getElementById('ghStats');
+  if(!statsEl)return;
+  var username='chiranjitckz';
+
+  fetch('https://api.github.com/users/'+username)
+    .then(function(res){
+      if(!res.ok)throw new Error('GitHub API responded '+res.status);
+      return res.json();
+    })
+    .then(function(data){
+      var joined=new Date(data.created_at).getFullYear();
+      statsEl.innerHTML=
+        '<div class="gh-stat">'+data.public_repos+'<span>Repos</span></div>'+
+        '<div class="gh-stat">'+data.followers+'<span>Followers</span></div>'+
+        '<div class="gh-stat">'+joined+'<span>Since</span></div>';
+    })
+    .catch(function(){
+      statsEl.innerHTML='<span class="gh-error">Live stats unavailable right now &mdash; the profile link still works.</span>';
+    });
+})();
+
+/* ============ TOAST NOTIFICATIONS ============ */
+function showToast(icon,title,sub,ms){
+  var stack=document.getElementById('toastStack');
+  if(!stack)return;
+  var t=document.createElement('div');
+  t.className='toast';
+  t.innerHTML='<div class="toast-icon">'+icon+'</div><div><div class="toast-title">'+title+'</div>'+(sub?'<div class="toast-sub">'+sub+'</div>':'')+'</div>';
+  stack.appendChild(t);
+  requestAnimationFrame(function(){t.classList.add('show')});
+  setTimeout(function(){
+    t.classList.remove('show');
+    setTimeout(function(){t.remove()},400);
+  },ms||4200);
+}
+
+function hasSeen(key){
+  try{return localStorage.getItem('seen_'+key)==='1'}catch(e){return false}
+}
+function markSeen(key){
+  try{localStorage.setItem('seen_'+key,'1')}catch(e){}
+}
+
+/* ============ KEYBOARD SHORTCUTS OVERLAY ============ */
+(function(){
+  var overlay=document.getElementById('shortcutsOverlay');
+  if(!overlay)return;
+  window.closeShortcuts=function(){overlay.classList.remove('open')};
+  window.openShortcuts=function(){overlay.classList.add('open')};
+
+  document.addEventListener('keydown',function(e){
+    var tag=(e.target.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea')return;
+    if(e.key==='?'){
+      e.preventDefault();
+      if(overlay.classList.contains('open'))closeShortcuts();else openShortcuts();
+    }
+    if(e.key==='Escape'&&overlay.classList.contains('open'))closeShortcuts();
+  });
+})();
+
+/* ============ EASTER EGG (KONAMI CODE) ============ */
+(function(){
+  var eggOverlay=document.getElementById('eggOverlay');
+  if(!eggOverlay)return;
+  window.closeEgg=function(){eggOverlay.classList.remove('open')};
+
+  var sequence=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  var progress=0;
+
+  document.addEventListener('keydown',function(e){
+    var tag=(e.target.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea')return;
+    var key=e.key.length===1?e.key.toLowerCase():e.key;
+    if(key===sequence[progress]){
+      progress++;
+      if(progress===sequence.length){
+        progress=0;
+        eggOverlay.classList.add('open');
+        if(!hasSeen('konami')){
+          markSeen('konami');
+          setTimeout(function(){
+            showToast('&#127942;','Achievement Unlocked','Code Explorer &mdash; you found the Konami code');
+          },600);
+        }
+      }
+    }else{
+      progress=(key===sequence[0])?1:0;
+    }
+  });
+})();
+
+/* ============ ACHIEVEMENT HOOKS ============ */
+(function(){
+  var origOpenPalette=window.openPalette;
+  if(origOpenPalette){
+    window.openPalette=function(){
+      origOpenPalette();
+      if(!hasSeen('palette')){
+        markSeen('palette');
+        setTimeout(function(){showToast('&#9889;','Power user detected','You found the command palette')},500);
+      }
+    };
+  }
+})();
+(function(){
+  var input=document.getElementById('termInput');
+  if(!input)return;
+  var fired=false;
+  input.addEventListener('keydown',function(e){
+    if(e.key==='Enter'&&!fired&&input.value.trim()){
+      fired=true;
+      if(!hasSeen('terminal')){
+        markSeen('terminal');
+        setTimeout(function(){showToast('&#128187;','Achievement Unlocked','Hands on the terminal &mdash; nice')},400);
+      }
+    }
+  });
 })();
