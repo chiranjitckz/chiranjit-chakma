@@ -156,7 +156,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:16px 0;background:rg
    ABOUT — bento grid
 ============================================ */
 #about{background:var(--bg)}
-.about-bento{display:grid;grid-template-columns:1.5fr 1fr;grid-template-areas:"bio quote" "bio stats" "info tags";gap:16px}
+.about-bento{display:grid;grid-template-columns:1.5fr 1fr;grid-template-areas:"bio quote" "bio stats" "info tags" "gh gh";gap:16px}
 .bento-bio{grid-area:bio;padding:30px 30px 22px}
 .bento-quote{grid-area:quote;padding:26px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
 .bento-quote::before{content:'"';position:absolute;top:-30px;right:6px;font-family:var(--serif);font-size:7rem;color:rgba(79,157,255,0.08);line-height:1}
@@ -189,6 +189,56 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:16px 0;background:rg
 
 .atag{font-size:0.74rem;letter-spacing:0.05em;padding:7px 15px;border-radius:999px;border:1px solid rgba(255,255,255,0.1);color:var(--text-dim);transition:border-color 0.2s,color 0.2s;cursor:default}
 .atag:hover{border-color:rgba(79,157,255,0.4);color:var(--accent)}
+
+.bento-gh{grid-area:gh;padding:20px 26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.gh-icon{width:42px;height:42px;border-radius:10px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;color:var(--text-dim);flex-shrink:0}
+.gh-info{flex:1;min-width:200px}
+.gh-label{font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.gh-label span{color:var(--accent)}
+.gh-stats{display:flex;gap:26px}
+.gh-stat{font-family:var(--serif);font-size:1.15rem;font-weight:700;color:var(--text);display:flex;flex-direction:column;gap:2px}
+.gh-stat span:not(.gh-skel){font-size:0.62rem;font-family:var(--sans);font-weight:400;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted)}
+.gh-skel{display:inline-block;width:34px;height:16px;border-radius:4px;background:linear-gradient(90deg,rgba(255,255,255,0.04),rgba(255,255,255,0.1),rgba(255,255,255,0.04));background-size:200% 100%;animation:skel 1.3s ease-in-out infinite}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.gh-visit{font-size:0.78rem;color:var(--accent);text-decoration:none;white-space:nowrap;padding:8px 14px;border:1px solid rgba(79,157,255,0.3);border-radius:8px;transition:background 0.2s,border-color 0.2s}
+.gh-visit:hover{background:rgba(79,157,255,0.1);border-color:rgba(79,157,255,0.5)}
+.gh-error{font-size:0.82rem;color:var(--text-muted);font-style:italic}
+
+/* ============================================
+   TOAST NOTIFICATIONS
+============================================ */
+#toastStack{position:fixed;top:80px;right:20px;z-index:10600;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{background:var(--card);border:1px solid var(--border-hover);border-radius:11px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 20px 50px rgba(0,0,0,0.4);transform:translateX(120%);opacity:0;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1),opacity 0.4s;max-width:290px}
+.toast.show{transform:translateX(0);opacity:1}
+.toast-icon{font-size:1.3rem;flex-shrink:0}
+.toast-title{font-size:0.85rem;font-weight:600;color:var(--text)}
+.toast-sub{font-size:0.74rem;color:var(--text-muted);margin-top:2px}
+@media(max-width:640px){#toastStack{right:12px;left:12px;top:76px}.toast{max-width:none}}
+
+/* ============================================
+   KEYBOARD SHORTCUTS OVERLAY
+============================================ */
+#shortcutsOverlay{position:fixed;inset:0;background:rgba(6,6,10,0.75);backdrop-filter:blur(4px);z-index:10500;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity 0.25s,visibility 0.25s}
+#shortcutsOverlay.open{opacity:1;visibility:visible}
+.shortcuts-box{width:min(92vw,420px);background:var(--card);border:1px solid var(--border-hover);border-radius:var(--radius-lg);padding:26px 28px;transform:scale(0.96);transition:transform 0.25s cubic-bezier(0.16,1,0.3,1)}
+#shortcutsOverlay.open .shortcuts-box{transform:scale(1)}
+.shortcuts-title{font-family:var(--serif);font-size:1.2rem;color:var(--text);margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.shortcuts-title button{background:none;border:none;color:var(--text-muted);font-size:1.3rem;cursor:pointer}
+.shortcut-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.86rem;color:var(--text-dim)}
+.shortcut-row:last-child{border-bottom:none}
+.shortcut-row kbd{font-family:var(--sans);font-size:0.72rem;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:5px;padding:3px 8px;color:var(--text)}
+
+/* ============================================
+   EASTER EGG OVERLAY
+============================================ */
+#eggOverlay{position:fixed;inset:0;background:rgba(4,4,8,0.92);backdrop-filter:blur(8px);z-index:10700;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity 0.3s,visibility 0.3s;text-align:center;padding:20px}
+#eggOverlay.open{opacity:1;visibility:visible}
+.egg-box{max-width:480px}
+.egg-emoji{font-size:3.5rem;margin-bottom:18px;display:inline-block;animation:eggpop 0.6s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes eggpop{0%{transform:scale(0) rotate(-20deg)}100%{transform:scale(1) rotate(0)}}
+.egg-title{font-family:var(--serif);font-size:1.6rem;color:var(--text);margin-bottom:12px}
+.egg-text{font-size:0.95rem;color:var(--text-dim);line-height:1.7;margin-bottom:22px}
+.egg-close{font-size:0.78rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#0a0a0d;background:var(--accent);border:none;padding:11px 24px;border-radius:9px;cursor:pointer}
 
 /* ============================================
    SKILLS — card grid
@@ -411,7 +461,7 @@ body.custom-cursor input,body.custom-cursor textarea{cursor:text!important}
   .hero-btns{justify-content:center}
   .hero-stats{max-width:420px;margin:0 auto;width:100%}
   .scroll-cue{display:none}
-  .about-bento{grid-template-columns:1fr;grid-template-areas:"bio" "quote" "stats" "info" "tags"}
+  .about-bento{grid-template-columns:1fr;grid-template-areas:"bio" "quote" "stats" "info" "tags" "gh"}
   .skills-grid{grid-template-columns:repeat(2,1fr)}
   .proj-grid{grid-template-columns:1fr}
   .cyber-grid{grid-template-columns:1fr}
